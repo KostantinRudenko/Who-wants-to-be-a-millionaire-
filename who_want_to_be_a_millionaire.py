@@ -4,57 +4,71 @@ player_surname = input('Write your surname: ')
 points = 0 #points which you will give
 false_ans = 0
 def random_question(player_name, player_surname, points, false_ans):
-    while false_ans != 3:
-        questions = {'How many stars on USA flag?' : '50', 
+
+    def true_false(points, questions, quest_list, 
+                   true_ans, random_index, false_ans):
+            if answer == true_ans:
+                print('True!!! Next question, please!') #If answer is True
+                points += 25
+                questions.pop(f'{quest_list[random_index]}')
+                quest_list.pop(random_index)
+                ans_list.pop(random_index)
+                print(points)
+                
+            else:
+                print('Not right! Next question, please!') #If answer is False
+                points -= 25
+                questions.pop(f'{quest_list[random_index]}')
+                quest_list.pop(random_index)
+                ans_list.pop(random_index)
+                false_ans += 1
+                print(points)
+                print(false_ans)
+
+            return points, false_ans, questions, quest_list
+
+    def result_file(player_name, player_surname, points):
+            with open('Your result', 'a') as file:
+                file.write(f'Name: {player_name}. Surname: {player_surname}. Points: {points}\n')
+                file.close()
+
+    questions = {'How many stars on USA flag?' : '50', 
                     'What year was born Sakharov?' : '1921',
                     'Near which mountain-volcano was the gem tanzanite found for the first time?' : 'Kilimanjaro',
                     'What headdress was worn during the ball by Tatyana Larina, the heroine of the novel "Eugene Onegin"?' : 'Crimson beret',
                     "What product in different countries is called daddy's beard and grandmother's hair?" : 'Cotton candy',
                     'What is the name of the red rag in the hands of a matador?' : 'Muleta',
                     'What astronomical phenomenon can the inhabitants of the Earth observe every 75-76 years?' : "Appearance of Halley's Comet",
-                    'How many carats is pure gold?' : '24'} #questions and answers
+                    'How many carats is pure gold?' : '24'} # questions and answers
+    
+    quest_list = list(questions.keys()) #questions list
+    ans_list = list(questions.values()) #answer list
+    
+    while false_ans != 3: 
         random_index = randint(0, len(questions) - 1) #random index
-        quest_list = list(questions.keys()) #questions list
-        ans_list = list(questions.values()) #answer list
-        true_ans = ans_list[random_index] #find true answer
-        answer = input(f'{quest_list[random_index]}: ') #your answer
-        # TODO - Сделать цикл. Пока что, задается только 1 вопрос
-        # TODO - Добавить функционал (например, пропустить вопрос)
-        def true_false(points, quest_list, random_index, false_ans):
-            if answer == true_ans:
-                print('True!!! Next question, please!') #If answer is True
-                points += 25
-                questions.pop(f'{quest_list[random_index]}')
-                quest_list.pop(random_index)
-                print(points)
-                random_question(player_name, player_surname, points, false_ans)
-            elif answer != true_ans:
-                print('Not right! Next question, please!') #If answer is False
-                points -= 25
-                questions.pop(f'{quest_list[random_index]}')
-                quest_list.pop(random_index)
-                false_ans += 1
-                print(points)
-                print(false_ans)
-                print(quest_list)
-                random_question(player_name, player_surname, points, false_ans)
-        true_false(points, quest_list, random_index, false_ans)
-        def result_file(player_name, player_surname, points):
-            with open('Your result', 'w') as file:
-                file.write(f'Name: {player_name}. Surname: {player_surname}. Points: {points}')
-                file.close()
+        answer = input(f'{quest_list[random_index]}: ').strip().lower() #your answer
+        true_ans = ans_list[random_index].lower() # find true answer
+        # TODO - Добавить функционал (например, пропустить вопрос)               
+        result = true_false(points, questions, quest_list, 
+                            true_ans, random_index, false_ans)
+        points = result[0]
+        false_ans = result[1]
+        questions = result[2]
+        quest_list = result[3]
         if len(questions) == 0:
-            print('Game over.')
-            print("Your result in the file 'Your result.txt'.")
-            result_file(player_name, player_surname, points)
             break
+
     print('Game over.')
     print("Your result in the file 'Your result.txt'.")
     result_file(player_name, player_surname, points)
-count = 1
-while count != 0:
-    random_question(player_name, player_surname, points, false_ans)
-    count-=1
+
+
+while True:
+    ask = input("Start? Y/N: ")
+    if ask == 'Y':
+        random_question(player_name, player_surname, points, false_ans)
+    else:
+        break
 # TODO - Задача которую нужно сделать
 # FIXME - Задача которую нужно исправить
 
