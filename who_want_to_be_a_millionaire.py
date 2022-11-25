@@ -49,20 +49,17 @@ def random_question(player_name, player_surname,
     quest_list = list(questions.keys()) #questions list
     ans_list = list(questions.values()) #answer list
     
-    while false_ans != 3 or skip_ans != 2: 
+    while false_ans != 3 or len(questions) != 0:
         random_index = randint(0, len(questions) - 1) #random index
         answer = input(f'{quest_list[random_index]}: ').strip().lower() #your answer
-        true_ans = ans_list[random_index].lower() # find true answer
-        # TODO - Добавить функционал (например, пропустить вопрос)               
+        true_ans = ans_list[random_index].lower() # find true answer            
         result = true_false(points, questions, quest_list, 
                             true_ans, random_index, false_ans, skip_ans)
         points = result[0]
         false_ans = result[1]
         questions = result[2]
         quest_list = result[3]
-        if len(questions) == 0:
-            break
-
+    
     print('Game over.')
     print("Your result in the file 'Your result.txt'.")
     result_file(player_name, player_surname, points)
@@ -70,22 +67,24 @@ def random_question(player_name, player_surname,
 # TODO - написать функцию которая будет чистить список результатов DID
 # TODO Пользователь может пропустить вопрос DID
 # TODO - Подсказка по вопросу
-while True:
+while True or ask == 'Y':
     ask_result_delet = input("Do you want to delet your result from file 'Your result.txt'? Y/N: ")
+    ask = input("Start? Y/N: ") # Question: "Do you want to continue game?"
     if ask_result_delet == 'Y':
         with open('Your result', 'w') as file:
             file.write('New Result: \n')
         random_question(player_name, player_surname,
                         points, false_ans, skip_ans)
-    else:
-        break
-while True:
-    ask = input("Start? Y/N: ") # Question: "Do you want to continue game?"
-    if ask == 'Y':
+    elif ask == 'Y':
         random_question(player_name, player_surname,
                         points, false_ans, skip_ans)
-    else:
+    elif ask != 'Y':
         break
+    else:
+        random_question(player_name, player_surname,
+                        points, false_ans, skip_ans)
+# TODO - дождатса урока
+# TODO - добавить функцию 
 '''
 Tasks 
 1. Залить код на Github в другой ветке
