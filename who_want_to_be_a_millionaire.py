@@ -3,17 +3,24 @@ player_name = input('Write your name: ')
 player_surname = input('Write your surname: ')
 points = 0 #points which you will give
 false_ans = 0
-def random_question(player_name, player_surname, points, false_ans):
+skip_ans = 0
+def random_question(player_name, player_surname,
+                    points, false_ans, skip_ans):
 
     def true_false(points, questions, quest_list, 
-                   true_ans, random_index, false_ans):
+                   true_ans, random_index, false_ans, skip_ans):
             if answer == true_ans:
                 print('True!!! Next question, please!') #If answer is True
                 points += 25
                 questions.pop(f'{quest_list[random_index]}')
                 quest_list.pop(random_index)
                 ans_list.pop(random_index)
-                print(points)
+            
+            elif answer == '???':
+                skip_ans += 1
+                questions.pop(f'{quest_list[random_index]}')
+                quest_list.pop(random_index)
+                ans_list.pop(random_index)
                 
             else:
                 print('Not right! Next question, please!') #If answer is False
@@ -22,10 +29,8 @@ def random_question(player_name, player_surname, points, false_ans):
                 quest_list.pop(random_index)
                 ans_list.pop(random_index)
                 false_ans += 1
-                print(points)
-                print(false_ans)
 
-            return points, false_ans, questions, quest_list
+            return points, false_ans, questions, quest_list, skip_ans
 
     def result_file(player_name, player_surname, points):
             with open('Your result', 'a') as file:
@@ -44,13 +49,13 @@ def random_question(player_name, player_surname, points, false_ans):
     quest_list = list(questions.keys()) #questions list
     ans_list = list(questions.values()) #answer list
     
-    while false_ans != 3: 
+    while false_ans != 3 or skip_ans != 2: 
         random_index = randint(0, len(questions) - 1) #random index
         answer = input(f'{quest_list[random_index]}: ').strip().lower() #your answer
         true_ans = ans_list[random_index].lower() # find true answer
         # TODO - Добавить функционал (например, пропустить вопрос)               
         result = true_false(points, questions, quest_list, 
-                            true_ans, random_index, false_ans)
+                            true_ans, random_index, false_ans, skip_ans)
         points = result[0]
         false_ans = result[1]
         questions = result[2]
@@ -62,16 +67,25 @@ def random_question(player_name, player_surname, points, false_ans):
     print("Your result in the file 'Your result.txt'.")
     result_file(player_name, player_surname, points)
 
-
+# TODO - написать функцию которая будет чистить список результатов DID
+# TODO Пользователь может пропустить вопрос DID
+# TODO - Подсказка по вопросу
 while True:
-    ask = input("Start? Y/N: ")
-    if ask == 'Y':
-        random_question(player_name, player_surname, points, false_ans)
+    ask_result_delet = input("Do you want to delet your result from file 'Your result.txt'? Y/N: ")
+    if ask_result_delet == 'Y':
+        with open('Your result', 'w') as file:
+            file.write('New Result: \n')
+        random_question(player_name, player_surname,
+                        points, false_ans, skip_ans)
     else:
         break
-# TODO - Задача которую нужно сделать
-# FIXME - Задача которую нужно исправить
-
+while True:
+    ask = input("Start? Y/N: ") # Question: "Do you want to continue game?"
+    if ask == 'Y':
+        random_question(player_name, player_surname,
+                        points, false_ans, skip_ans)
+    else:
+        break
 '''
 Tasks 
 1. Залить код на Github в другой ветке
