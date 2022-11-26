@@ -1,11 +1,11 @@
 from random import randint #comand randint
 player_name = input('Write your name: ')
 player_surname = input('Write your surname: ')
-points = 0 #points which you will give
-false_ans = 0
-skip_ans = 0
+points = 0 # points which you will get
+false_ans = 0 # Your false answers
+skip_ans = 0 # Your skip questions
 def random_question(player_name, player_surname,
-                    points, false_ans, skip_ans):
+                    points, false_ans, skip_ans): # Main function
 
     def true_false(points, questions, quest_list, 
                    true_ans, random_index, false_ans, skip_ans):
@@ -16,7 +16,7 @@ def random_question(player_name, player_surname,
                 quest_list.pop(random_index)
                 ans_list.pop(random_index)
             
-            elif answer == '???':
+            elif answer == '???':                       # If you write '???', you skip question
                 skip_ans += 1
                 questions.pop(f'{quest_list[random_index]}')
                 quest_list.pop(random_index)
@@ -30,9 +30,9 @@ def random_question(player_name, player_surname,
                 ans_list.pop(random_index)
                 false_ans += 1
 
-            return points, false_ans, questions, quest_list, skip_ans
-
-    def result_file(player_name, player_surname, points):
+            return points, false_ans, questions, quest_list, skip_ans # Saving data
+        
+    def result_file(player_name, player_surname, points): # Making file with your result
             with open('Your result', 'a') as file:
                 file.write(f'Name: {player_name}. Surname: {player_surname}. Points: {points}\n')
                 file.close()
@@ -51,44 +51,37 @@ def random_question(player_name, player_surname,
     
     while false_ans != 3 or len(questions) != 0:
         random_index = randint(0, len(questions) - 1) #random index
-        answer = input(f'{quest_list[random_index]}: ').strip().lower() #your answer
+        answer = input(f"You can skip question with '???'. {quest_list[random_index]}: ").strip().lower() #your answer
         true_ans = ans_list[random_index].lower() # find true answer            
         result = true_false(points, questions, quest_list, 
                             true_ans, random_index, false_ans, skip_ans)
-        points = result[0]
+
+        points = result[0] 
         false_ans = result[1]
         questions = result[2]
         quest_list = result[3]
-    
+
     print('Game over.')
     print("Your result in the file 'Your result.txt'.")
-    result_file(player_name, player_surname, points)
+    result_file(player_name, player_surname, points) # Game stop
 
 # TODO - написать функцию которая будет чистить список результатов DID
 # TODO Пользователь может пропустить вопрос DID
-# TODO - Подсказка по вопросу
-while True or ask == 'Y':
-    ask_result_delet = input("Do you want to delet your result from file 'Your result.txt'? Y/N: ")
+# TODO - Подсказка по вопросу ???
+
+while ask == 'Y':
+    result_delet = input("Do you want to delet your result from file 'Your result.txt'? Y/N: ")
     ask = input("Start? Y/N: ") # Question: "Do you want to continue game?"
-    if ask_result_delet == 'Y':
+    if result_delet == 'Y':     # Cleaning file with result if result_delet == 'Y'
         with open('Your result', 'w') as file:
             file.write('New Result: \n')
         random_question(player_name, player_surname,
                         points, false_ans, skip_ans)
-    elif ask == 'Y':
+    elif ask == 'Y':                                    # You continue game
         random_question(player_name, player_surname,
                         points, false_ans, skip_ans)
-    elif ask != 'Y':
+    elif ask != 'Y':                                    # You don't continue game
         break
     else:
         random_question(player_name, player_surname,
                         points, false_ans, skip_ans)
-# TODO - дождатса урока
-# TODO - добавить функцию 
-'''
-Tasks 
-1. Залить код на Github в другой ветке
-2. (Опционально) придумать свои правила оформления веток (как они будут называться)
-3. Поправить код и залить изменения в ветку
-4. Ознакомиться с системой контроля версий: https://git-scm.com/book/ru/v2/%D0%92%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5-%D0%9E-%D1%81%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D0%B5-%D0%BA%D0%BE%D0%BD%D1%82%D1%80%D0%BE%D0%BB%D1%8F-%D0%B2%D0%B5%D1%80%D1%81%D0%B8%D0%B9
-'''
