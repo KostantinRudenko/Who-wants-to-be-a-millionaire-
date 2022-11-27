@@ -18,10 +18,7 @@ def random_question(player_name, player_surname,
             
             elif answer == '???':                       # If you write '???', you skip question
                 skip_ans += 1
-                questions.pop(f'{quest_list[random_index]}')
-                quest_list.pop(random_index)
-                ans_list.pop(random_index)
-                
+              
             else:
                 print('Not right! Next question, please!') #If answer is False
                 points -= 25
@@ -48,13 +45,16 @@ def random_question(player_name, player_surname,
     
     quest_list = list(questions.keys()) #questions list
     ans_list = list(questions.values()) #answer list
-    
+    random_index = randint(0, len(questions) - 1) #random index
+
     while false_ans != 3 or len(questions) != 0:
-        random_index = randint(0, len(questions) - 1) #random index
+        if random_index == 0:
+            break
         answer = input(f"You can skip question with '???'. {quest_list[random_index]}: ").strip().lower() #your answer
         true_ans = ans_list[random_index].lower() # find true answer            
         result = true_false(points, questions, quest_list, 
                             true_ans, random_index, false_ans, skip_ans)
+        random_index -= 1
 
         points = result[0] 
         false_ans = result[1]
@@ -64,12 +64,9 @@ def random_question(player_name, player_surname,
     print('Game over.')
     print("Your result in the file 'Your result.txt'.")
     result_file(player_name, player_surname, points) # Game stop
+    return skip_ans
 
-# TODO - написать функцию которая будет чистить список результатов DID
-# TODO Пользователь может пропустить вопрос DID
-# TODO - Подсказка по вопросу ???
-
-while ask == 'Y':
+while True:
     result_delet = input("Do you want to delet your result from file 'Your result.txt'? Y/N: ")
     ask = input("Start? Y/N: ") # Question: "Do you want to continue game?"
     if result_delet == 'Y':     # Cleaning file with result if result_delet == 'Y'
@@ -77,11 +74,10 @@ while ask == 'Y':
             file.write('New Result: \n')
         random_question(player_name, player_surname,
                         points, false_ans, skip_ans)
-    elif ask == 'Y':                                    # You continue game
-        random_question(player_name, player_surname,
-                        points, false_ans, skip_ans)
-    elif ask != 'Y':                                    # You don't continue game
+    if ask == 'Y':                                    # You continue game
+        skip = random_question(player_name, player_surname,
+                            points, false_ans, skip_ans)
+        if skip == 3:
+            break
+    else:  # You don't continue game
         break
-    else:
-        random_question(player_name, player_surname,
-                        points, false_ans, skip_ans)
